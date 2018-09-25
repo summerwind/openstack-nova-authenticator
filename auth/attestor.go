@@ -131,6 +131,13 @@ func (at *Attestor) VerifyAuthLimit(instance *openstack.Instance, limit int, dea
 	attempt.count = attempt.count + 1
 	at.attempts[instance.ID] = attempt
 
+	// Cleanup stale entries.
+	for key, val := range at.attempts {
+		if time.Now().After(val.deadline) {
+			delete(at.attempts, key)
+		}
+	}
+
 	if attempt.count > limit {
 		return attempt.count, errors.New("too many authentication attempts")
 	}
@@ -191,11 +198,11 @@ func (at *Attestor) AttestProjectID(instance *openstack.Instance, projectID stri
 
 // AttestUserID is used to attest the user ID of OpenStack instance.
 func (at *Attestor) AttestUserID(instance *openstack.Instance, userID string) error {
-	if UserID == "" {
+	if userID == "" {
 		return nil
 	}
 
-	if instance.UserID != UserID {
+	if instance.UserID != userID {
 		return errors.New("user ID mismatched")
 	}
 
