@@ -1,0 +1,27 @@
+[[constraint]]
+  name = "github.com/spf13/cobra"
+  version = "v0.0.3"
+
+[[override]]
+  name = "github.com/spf13/pflag"
+  version = "v1.0.2"
+
+[[constraint]]
+  name = "gopkg.in/yaml.v2"
+  version = "v2.2.1"
+
+[[constraint]]
+  name = "gopkg.in/square/go-jose.v2"
+  version = "v2.1.9"
+
+[[constraint]]
+  name = "github.com/gophercloud/gophercloud"
+  revision = "19abc56a8cd8d3630ab9735173cb92c0bf635f33"
+
+[[constraint]]
+  name = "github.com/gophercloud/utils"
+  revision = "18450e98e12dae90303d0483730333797d04be9b"
+
+[[constraint]]
+  name = "github.com/mitchellh/mapstructure"
+  revision = "bb74f1db0675b241733089d5a1faa5dd8b0ef57b"
