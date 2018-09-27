@@ -110,6 +110,16 @@ func authHandler(w http.ResponseWriter, r *http.Request) {
 
 // run starts the HTTP server to process authentication.
 func run(cmd *cobra.Command, args []string) error {
+	v, err := cmd.Flags().GetBool("version")
+	if err != nil {
+		return err
+	}
+
+	if v {
+		fmt.Printf("%s (%s)\n", VERSION, COMMIT)
+		return nil
+	}
+
 	configPath, err := cmd.Flags().GetString("config")
 	if err != nil {
 		return err
@@ -172,6 +182,7 @@ func main() {
 	}
 
 	cmd.Flags().StringP("config", "c", "config.yml", "Path to the configuration file")
+	cmd.Flags().BoolP("version", "v", false, "Display version information and exit")
 
 	err := cmd.Execute()
 	if err != nil {
