@@ -1,0 +1,38 @@
+# The address of the endpoint.
+listen: 0.0.0.0:18775
+
+tls:
+  # The path of the PEM encoded certificate file.
+  certFile: server.pem
+  # The path of the PEM encoded certificate key file.
+  keyFile: server-key.pem
+
+auth:
+  # Maximum number of authentication attempts.
+  limit: 3
+  # The duration of authentication from the time of instance startup.
+  # 600s indicates that authentication can be performed for 600 seconds
+  # after instance startup.
+  period: 600s
+  # The path of the PEM encoded signing key file.
+  signingKeyFile: signing-key.pem
+  # The value of 'iss' claim for issued token.
+  tokenIssuer: https://127.0.0.1:18775
+  # The token expiration time.
+  tokenExpiry: 60s
+
+roles:
+  web:
+    # The Project ID of OpenStack to which the instance belongs.
+    # This indicates that the instance to be authenticated as
+    # the 'web' role must be created with this Project ID.
+    projectID: 7e562c1a-8581-4230-b973-a83db9534b02
+    # The User ID of OpenStack to which the instance belongs.
+    # This indicates that the instance to be authenticated as
+    # the 'web' role must be created by this User ID.
+    userID: 821a2eaa-c072-4c06-9aa6-a44bd7b91935
+    # The metadata given to the instance. This indicates that
+    # the instance to be authenticated as the 'web' role needs
+    # to have the metadata specified here.
+    metadata:
+      role: web
