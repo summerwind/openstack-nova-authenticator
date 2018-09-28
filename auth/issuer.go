@@ -4,7 +4,9 @@ import (
 	"crypto/x509"
 	"encoding/json"
 	"encoding/pem"
+	"fmt"
 	"io/ioutil"
+	"net/url"
 	"time"
 
 	"github.com/summerwind/openstack-nova-authenticator/config"
@@ -24,14 +26,19 @@ type Token struct {
 
 // Issuer represents a token issuer.
 type Issuer struct {
-	tokenIssuer string
+	tokenIssuer *url.URL
 	tokenExpiry time.Duration
 	signer      jose.Signer
 }
 
 // NewIssuer returns a new Issuer with signer.
 func NewIssuer(c *config.Config) (*Issuer, error) {
-	tokenExpiry, err := time.ParseDuration(c.Auth.TokenExpiry)
+	issuer, err := url.Parse(c.Auth.TokenIssuer)
+	if err != nil {
+		return nil, err
+	}
+
+	expiry, err := time.ParseDuration(c.Auth.TokenExpiry)
 	if err != nil {
 		return nil, err
 	}
@@ -58,8 +65,8 @@ func NewIssuer(c *config.Config) (*Issuer, error) {
 	}
 
 	iss := &Issuer{
-		tokenIssuer: c.Auth.TokenIssuer,
-		tokenExpiry: tokenExpiry,
+		tokenIssuer: issuer,
+		tokenExpiry: expiry,
 		signer:      signer,
 	}
 
@@ -68,10 +75,15 @@ func NewIssuer(c *config.Config) (*Issuer, error) {
 
 // NewToken issues a new token with the specified instance information.
 func (iss *Issuer) NewToken(instance *openstack.Instance, roleName string) (string, error) {
+	roleURL, err := url.Parse(fmt.Sprintf("roles/%s", roleName))
+	if err != nil {
+		return "", err
+	}
+
 	t := Token{
-		Issuer:       iss.tokenIssuer,
+		Issuer:       iss.tokenIssuer.String(),
 		Subject:      instance.ID,
-		Audience:     []string{roleName},
+		Audience:     []string{iss.tokenIssuer.ResolveReference(roleURL).String()},
 		Expiry:       time.Now().Add(iss.tokenExpiry).Unix(),
 		IssuedAt:     time.Now().Unix(),
 		InstanceName: instance.Name,
