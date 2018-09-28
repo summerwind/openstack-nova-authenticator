@@ -35,12 +35,6 @@ tasks:
         vars: {OS: "linux", ARCH: "arm"}
       - task: package
         vars: {OS: "darwin", ARCH: "amd64"}
-  container:
-    deps: [test]
-    cmds:
-      - GOARCH=amd64 GOOS=linux go build {{.BUILD_FLAGS}} .
-      - docker build -t summerwind/{{.NAME}}:latest -t summerwind/{{.NAME}}:{{.VERSION}} .
-      - rm -rf {{.NAME}}
   vendor:
     cmds:
       - dep ensure -v
