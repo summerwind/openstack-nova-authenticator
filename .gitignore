@@ -1,2 +1,4 @@
 openstack-nova-authenticator
+cover.out
 vendor/
+dist/
