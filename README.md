@@ -61,13 +61,7 @@ The token issued by Authenticator is in JWT format. The claims contained in the 
 
 ## Build
 
-If you wish to work on this plugin, you'll first need [Go](https://golang.org), [dep](https://github.com/golang/dep), and [go-task](https://github.com/go-task/task) installed on your machine.
-
-First make sure Go is properly installed, including setting up a [GOPATH](https://golang.org/doc/code.html#GOPATH) environment. Next, clone this repository into `$GOPATH/src/github.com/summerwind/openstack-nova-authenticator`. Then you can install the required Go packages to the vendor directory.
-
-```
-$ task vendor
-```
+If you wish to work on this, you'll first need [Go](https://golang.org), and [go-task](https://github.com/go-task/task) installed on your machine.
 
 To build a development version of this, run `task build`.
 
@@ -86,5 +80,3 @@ You can also see the test coverage report as follows.
 ```
 $ task cover
 ```
-
-
