@@ -9,7 +9,7 @@ vars:
 tasks:
   build:
     cmds:
-      - go build .
+      - CGO_ENABLED=0 go build .
   test:
     cmds:
       - go vet ./...
@@ -20,13 +20,13 @@ tasks:
       - go tool cover -html=cover.out
   package:
     cmds:
-      - GOOS={{.OS}} GOARCH={{.ARCH}} go build {{.BUILD_FLAGS}} .
-      - tar -czf dist/{{.NAME}}_{{.OS}}_{{.ARCH}}.tar.gz {{.NAME}}
+      - GOOS={{.OS}} GOARCH={{.ARCH}} CGO_ENABLED=0 go build {{.BUILD_FLAGS}} .
+      - tar -czf release/{{.NAME}}_{{.OS}}_{{.ARCH}}.tar.gz {{.NAME}}
       - rm -rf {{.NAME}}
-  dist:
+  release:
     deps: [test]
     cmds:
-      - mkdir -p dist
+      - mkdir -p release
       - task: package
         vars: {OS: "linux", ARCH: "amd64"}
       - task: package
@@ -35,9 +35,10 @@ tasks:
         vars: {OS: "linux", ARCH: "arm"}
       - task: package
         vars: {OS: "darwin", ARCH: "amd64"}
-  vendor:
+  github-release:
+    deps: [release]
     cmds:
-      - dep ensure -v
+    - ghr v{{.VERSION}} release/
   clean:
     cmds:
-      - rm -rf {{.NAME}} dist cover.out
+      - rm -rf {{.NAME}} release cover.out

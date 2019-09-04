@@ -1,0 +1,33 @@
+version: 2
+jobs:
+  build:
+    docker:
+    - image: summerwind/toolbox:latest
+    steps:
+    - checkout
+    - run:
+        name: Build
+        command: task build
+  release:
+    docker:
+    - image: summerwind/toolbox:latest
+    steps:
+    - checkout
+    - run:
+        name: Upload release files to GitHub
+        command: task github-release
+
+workflows:
+  version: 2
+  main:
+    jobs:
+    - build
+  release:
+    jobs:
+    - release:
+        context: global
+        filters:
+          branches:
+            ignore: /.*/
+          tags:
+            only: /.*/
